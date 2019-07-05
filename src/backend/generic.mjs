@@ -21,12 +21,12 @@ class EventEmitter {
             fn( ... args )
             this.off( e, closure )
         }
-        
+
         this.on( e, closure )
     }
 
     off( e, fn ) {
-        if( ! e in this.registry ) {
+        if( ! (e in this.registry) ) {
             return
         }
 
@@ -38,7 +38,7 @@ class EventEmitter {
     }
 
     emit( e, ... args ) {
-        if( ! e in this.registry ) {
+        if( ! (e in this.registry) ) {
             return;
         }
 

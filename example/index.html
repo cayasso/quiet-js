@@ -204,10 +204,10 @@
             const appendError = ( error = 'There was a problem' ) =>
                 appendMessage( error, [ 'error' ] )
 
-            const receiver = new Quiet.Receiver( Quiet.Profiles.Ultrasonic )
+            const receiver = new Quiet.Receiver( Quiet.Profiles.UltrasonicExperimental )
             receiver.on( 'error', appendError )
             receiver.on( 'payload', buffer => {
-                const message = Quiet.Helpers.ab2str( buffer )
+                const message = Quiet.Helpers.ab2str_legacy( buffer )
                 appendMessage( message )
             } )
 

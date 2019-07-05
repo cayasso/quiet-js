@@ -2,10 +2,48 @@
 import AudioBackend from './backend/index.mjs'
 import receiveProcessor from './processors/receive.mjs'
 
-const getUserAudio = async ( ) =>
-    navigator.mediaDevices.getUserMedia( {
+const getGumConstraints = () => {
+    if (navigator.webkitGetUserMedia !== undefined) {
+        return {
+            audio: {
+                optional: [
+                  {googAutoGainControl: false},
+                  {googAutoGainControl2: false},
+                  {echoCancellation: false},
+                  {googEchoCancellation: false},
+                  {googEchoCancellation2: false},
+                  {googDAEchoCancellation: false},
+                  {googNoiseSuppression: false},
+                  {googNoiseSuppression2: false},
+                  {googHighpassFilter: false},
+                  {googTypingNoiseDetection: false},
+                  {googAudioMirroring: false}
+                ]
+            }
+        };
+    }
+    if (navigator.mozGetUserMedia !== undefined) {
+        return {
+            audio: {
+                echoCancellation: false,
+                mozAutoGainControl: false,
+                mozNoiseSuppression: false
+            }
+        };
+
+    }
+    return {
         audio: {
             echoCancellation: false
+        }
+    };
+};
+
+const getUserAudio = async ( deviceId = null ) =>
+    navigator.mediaDevices.getUserMedia( {
+        audio: {
+            deviceId,
+            ... getGumConstraints().audio
         }
     } )
 
@@ -16,9 +54,14 @@ export class Receiver {
         this.backend = new AudioBackend( profileKey )
     }
 
-    async start( ) {
+    async start( deviceId ) {
         this.audioNode = await this.backend.createAudioNode( receiveProcessor )
-        return this.resume( )
+        return this.resume( deviceId )
+    }
+
+    async enumerateInputs() {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        return devices.filter(d => d.kind === 'audioinput');
     }
 
     on( event, fn ) {
@@ -35,10 +78,10 @@ export class Receiver {
             .forEach( track => track.stop( ) )
     }
 
-    async resume( ) {
+    async resume( deviceId ) {
         const context = this.backend.getContext( )
 
-        this.audioStream = await getUserAudio( )
+        this.audioStream = await getUserAudio( deviceId )
         this.audioInput = context.createMediaStreamSource( this.audioStream )
         this.audioInput
             .connect( this.audioNode )

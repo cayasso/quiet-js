@@ -1,6 +1,6 @@
 {
-  "name": "quiet-js",
-  "version": "1.0.0",
+  "name": "@8x8/quiet-js",
+  "version": "0.0.7",
   "description": "Quiet.js",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/jitsi/quiet-js.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "gabriel.lucaci@8x8.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jitsi/quiet-js/issues"
